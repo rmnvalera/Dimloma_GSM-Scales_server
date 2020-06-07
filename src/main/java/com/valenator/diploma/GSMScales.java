@@ -6,14 +6,14 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.valenator.diploma.controllers.PingController;
+import com.valenator.diploma.liquibase.NameableMigrationsBundle;
 import com.valenator.diploma.util.Constants;
 import io.dropwizard.Application;
+import io.dropwizard.db.PooledDataSourceFactory;
 import io.dropwizard.jackson.Jackson;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-
-import java.security.InvalidKeyException;
 
 public class GSMScales extends Application<GSMScalesConfiguretion> {
 
@@ -21,6 +21,12 @@ public class GSMScales extends Application<GSMScalesConfiguretion> {
     public void initialize(Bootstrap<GSMScalesConfiguretion> bootstrap) {
         bootstrap.setObjectMapper(Jackson.newMinimalObjectMapper().registerModule(new Jdk8Module()));
 
+        bootstrap.addBundle(new NameableMigrationsBundle<GSMScalesConfiguretion>("scalesdb", "scalesdb.xml") {
+            @Override
+            public PooledDataSourceFactory getDataSourceFactory(GSMScalesConfiguretion configuration) {
+                return configuration.getScalesDatabase();
+            }
+        });
     }
 
     @Override
@@ -28,7 +34,7 @@ public class GSMScales extends Application<GSMScalesConfiguretion> {
         return "GSM-Scales";
     }
 
-    public void run(GSMScalesConfiguretion config, Environment environment) throws InvalidKeyException {
+    public void run(GSMScalesConfiguretion config, Environment environment) {
 
         SharedMetricRegistries.add(Constants.METRICS_NAME, environment.metrics());
         environment.getObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
