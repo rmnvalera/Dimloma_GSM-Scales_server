@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: postgesdb
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: postgesdb
-#      PGDATA: /var/lib/postgresql/data/pgdat
+      PGDATA: /var/lib/postgresql/data/pgdat
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgesdb"]
       interval: 10s
@@ -58,8 +58,7 @@ services:
 networks:
   postgres:
 
-
-volumes:
-  pgdata:
+#volumes:
+#  pgdata:
 
 
