@@ -1,0 +1,65 @@
+version: '2.4'
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: postgesdb
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: postgesdb
+      PGDATA: /var/lib/postgresql/data/pgdat
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgesdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+#    ports:
+#      - "5433:5432"
+    networks:
+      - postgres
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - ./volumes/pgadmin:/var/lib/pgadmin
+    ports:
+      - "8082:80"
+    networks:
+      - postgres
+  grafana:
+    image: grafana/grafana
+    container_name: monitoring_grafana
+    restart: unless-stopped
+    volumes:
+      - ./volumes/grafana:/var/lib/grafana
+    ports:
+      - "3001:3000"
+    networks:
+      - postgres
+  bee_server:
+    build: .
+    command: >
+      sh -c "java -jar GSM-Scales-1.0.jar database migrate config.yml &&
+             java -jar GSM-Scales-1.0.jar server config.yml"
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    networks:
+      - postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+networks:
+  postgres:
+
+
+volumes:
+  pgdata:
+
+

@@ -6,6 +6,6 @@ RUN mvn clean install
 
 FROM openjdk:11
 WORKDIR /myapp/
-#COPY config/config.yml /myapp/
+COPY config/config.yml /myapp/
 COPY --from=builder /mymaven/target/GSM-Scales-1.0.jar /myapp/
 #ENTRYPOINT [ "java", "-jar", "GSM-Scales-1.0.jar" ]

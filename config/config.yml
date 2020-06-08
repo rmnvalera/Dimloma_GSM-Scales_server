@@ -1,5 +1,13 @@
 scalesDatabase:
   driverClass: org.postgresql.Driver
-  user: user
-  password: pasword
-  url: "jdbc:postgresql://postgres:5432/databse"
+  user: postgesdb
+  password: secret
+  url: "jdbc:postgresql://postgres:5432/postgesdb"
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+  adminConnectors:
+    - type: http
+      port: 8081
