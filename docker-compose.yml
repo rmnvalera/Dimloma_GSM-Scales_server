@@ -4,13 +4,13 @@ services:
   postgres:
     container_name: postgres_container
     image: postgres
-    volumes:
-      - pgdata:/var/lib/postgresql/data/
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data/
     environment:
       POSTGRES_USER: postgesdb
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: postgesdb
-      PGDATA: /var/lib/postgresql/data/pgdat
+#      PGDATA: /var/lib/postgresql/data/pgdat
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgesdb"]
       interval: 10s
