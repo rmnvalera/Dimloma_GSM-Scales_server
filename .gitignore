@@ -8,3 +8,4 @@ maven-repo/
 dbdata/
 pgadmin/
 config/config_dev.yml
+volumes/
