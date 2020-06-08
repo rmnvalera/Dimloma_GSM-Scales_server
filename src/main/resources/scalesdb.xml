@@ -6,21 +6,46 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet id="1" author="oZGeek">
-        <createTable tableName="white_list">
+        <createTable tableName="database">
 
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="number" type="varchar(255)">
-                <constraints nullable="false"/>
+            <column name="dht_humidity_1" type="double">
+                <constraints nullable="true"/>
             </column>
 
-            <column name="permissions" type="json">
-                <constraints nullable="false"/>
+            <column name="dht_humidity_2" type="double">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="dht_temperature_1" type="double">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="dht_temperature_2" type="double">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="weight" type="double">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="balance" type="double">
+                <constraints nullable="true"/>
             </column>
 
         </createTable>
+    </changeSet>
+
+
+    <changeSet id="2" author="oZGeek">
+        <addColumn tableName="database">
+            <column name="timestamp" type="bigint" defaultValueComputed="extract(epoch from now()) * 1000">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

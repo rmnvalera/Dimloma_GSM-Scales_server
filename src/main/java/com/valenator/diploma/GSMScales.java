@@ -6,8 +6,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.valenator.diploma.controllers.MessagesController;
 import com.valenator.diploma.controllers.PingController;
 import com.valenator.diploma.liquibase.NameableMigrationsBundle;
+import com.valenator.diploma.storage.Beehivesdb;
 import com.valenator.diploma.storage.FaultTolerantDatabase;
 import com.valenator.diploma.util.Constants;
 import io.dropwizard.Application;
@@ -46,10 +48,12 @@ public class GSMScales extends Application<GSMScalesConfiguretion> {
         environment.getObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
         JdbiFactory jdbiFactory = new JdbiFactory(DefaultNameStrategy.CHECK_EMPTY);
-        Jdbi profileJdbi = jdbiFactory.build(environment, config.getScalesDatabase(), "profiledb");
-        FaultTolerantDatabase profileDatabase = new FaultTolerantDatabase("profiledb", profileJdbi, config.getScalesDatabase().getCircuitBreakerConfiguration());
+        Jdbi profileJdbi = jdbiFactory.build(environment, config.getScalesDatabase(), "database");
+        FaultTolerantDatabase database = new FaultTolerantDatabase("database", profileJdbi, config.getScalesDatabase().getCircuitBreakerConfiguration());
 
+        Beehivesdb beehivesdb = new Beehivesdb(database);
 
+        environment.jersey().register(new MessagesController(beehivesdb));
         environment.jersey().register(new PingController());
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
     }
